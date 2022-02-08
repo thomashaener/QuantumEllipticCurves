@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
@@ -123,7 +123,7 @@ namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
             let nQubits=Length(counter);
             (Controlled CyclicRotateRegister)(controls, LittleEndian(counter));
             let polynomial = _PrimitiveGF2Polynomial(nQubits);
-            for (idp in 0..Length(polynomial) - 1){
+            for idp in 0..Length(polynomial) - 1{
                 (Controlled CNOT)(controls, (counter[0], counter[polynomial[idp]]));
             }
         }

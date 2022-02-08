@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 namespace Microsoft.Quantum.Crypto.Isogenies {
@@ -156,7 +156,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                 points, which only require {4 * nPoints * nQubits} qubits");
         }
         mutable pointArray = new ECPointMontgomeryXZ[nPoints];
-        for (idx in 0.. nPoints - 1){
+        for idx in 0.. nPoints - 1{
             set pointArray w/= idx <- ECPointMontgomeryXZ(
                 QubitArrayAsFp2MontModInt(modulus, register[4 * idx * nQubits .. (4 * idx + 2) * nQubits - 1]),
                 QubitArrayAsFp2MontModInt(modulus, register[(4 * idx + 2) * nQubits .. (4 * idx + 4) * nQubits - 1])
@@ -721,7 +721,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
     function DoubledPointArray(point : ECPointMontgomeryXZClassical, curve : ECCoordsMontgomeryFormAPlusCClassical, nPoints : Int) : ECPointMontgomeryXZClassical[] {
         mutable points = new ECPointMontgomeryXZClassical[nPoints];
         set points w/= 0 <- point;
-        for (idx in 1 .. nPoints - 1){
+        for idx in 1 .. nPoints - 1{
             set points w/= idx <- PointDoubleMontgomeryXZClassical(points[idx - 1], curve);
         }
         return points;
@@ -889,7 +889,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         mutable innerP = pointP;
         mutable innerQ = pointQ;
         mutable innerQminP = pointQminP;
-        for (idx in 0..Length(constantArray) - 1){
+        for idx in 0..Length(constantArray) - 1{
             if (constantArray[idx]){
                 set innerQ = DifferentialAddECPointMontgomeryXZClassical(innerP, innerQ, innerQminP);
             } else {
@@ -939,7 +939,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         if (height==1){
             let outCurve = TwoIsogenousCurveMontgomeryXZClassical(startingPoint);
             mutable outPoints = new ECPointMontgomeryXZClassical[nPoints];
-            for (idxPoint in 0..nPoints - 1){
+            for idxPoint in 0..nPoints - 1{
                 set outPoints w/= idxPoint <- TwoIsogenyAtPointMontgomeryXZClassical(startingPoint, trailingPoints[idxPoint]);
             }
             return (outPoints, outCurve);
@@ -947,7 +947,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             let leftHeight = height/2;
             let rightHeight = height - leftHeight;
             mutable leftPoint = startingPoint;
-            for (idxDouble in 0..rightHeight - 1){
+            for idxDouble in 0..rightHeight - 1{
                 set leftPoint = PointDoubleMontgomeryXZClassical(leftPoint, startingCurve);
             }
             let (midPoints, midCurve) = IsogenyTreeMiddleClassical(
@@ -1034,7 +1034,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             CopyFp2MontModInt(source::zs, target::zs);
         }
         controlled (controls, ...){
-            using (spareControl = Qubit()){
+            use spareControl = Qubit(){
                 (Controlled X)(controls, (spareControl));
                 (Controlled CopyFp2MontModInt)(controls, (source::xs, target::xs) );
                 (Controlled CopyFp2MontModInt)([spareControl], (source::zs, target::zs));
@@ -1061,7 +1061,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             SwapFp2ElementMontgomeryForm(point1::zs, point2::zs);
         }
         controlled (controls, ...){
-            using (singleControl = Qubit()){
+            use singleControl = Qubit(){
                 (Controlled X)(controls, (singleControl));
                 (Controlled SwapFp2ElementMontgomeryForm)(controls, (point1::xs, point2::xs));
                 (Controlled SwapFp2ElementMontgomeryForm)([singleControl], (point1::zs, point2::zs));
@@ -1098,7 +1098,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             CrissCrossFp2ElementMontgomeryForm(point::xs, point::zs);
             let nQubits = Length(point::xs::reals::register!);
             let modulus = point::xs::modulus;
-            using (register1 = Qubit[4 * nQubits]){
+            use register1 = Qubit[4 * nQubits]{
                 let aSquareds = Fp2MontModInt(
                     modulus,
                     MontModInt(modulus, LittleEndian(register1[0..nQubits - 1])), 
@@ -1113,7 +1113,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                 //Sets asquareds = A^2, bsquareds = B^2
                 SquareFp2ElementMontgomeryFormGeneric(point::zs, aSquareds, ModularMulAndXorMontgomeryForm(_, _, _));
                 SquareFp2ElementMontgomeryFormGeneric(point::xs, bSquareds, ModularMulAndXorMontgomeryForm(_, _, _));
-                using (register2 = Qubit[2 * nQubits]){
+                use register2 = Qubit[2 * nQubits]{
                     let cs = Fp2MontModInt(
                         modulus,
                         MontModInt(modulus, LittleEndian(register2[0..nQubits - 1])), 
@@ -1274,7 +1274,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             
             let points = [point] + QubitArrayAsECPointArray(nDoublings - 1, nQubits, modulus, internalAncillas[1]) + [outputPoint];
 
-            for (idx in 0..nDoublings - 1){
+            for idx in 0..nDoublings - 1{
                 DoubleECPointMontgomeryXZOpen(points[idx], curve, doublingAncillas[idx], points[idx + 1]);
             }
         }
@@ -1351,11 +1351,11 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             let modulus = curve::a24Plus::modulus;
             let nQubits = Length(curve::a24Plus::reals::register!);
             let pointSize = 4 * nQubits;
-            using (outputs = Qubit[pointSize]){
+            use outputs = Qubit[pointSize]{
                 let midPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, outputs);
                 if (nDoublings == 1){
                     let (nAncilla, _) = AncillaCountDoubleECPoint(nQubits);
-                    using (ancillas = Qubit[nAncilla]){
+                    use ancillas = Qubit[nAncilla]{
                         DoubleECPointMontgomeryXZOpen(point, curve, ancillas, midPoint);
                         (Controlled CopyECPointMontgomeryXZ)(controls, (midPoint, outputPoint));
                         (Adjoint DoubleECPointMontgomeryXZOpen)(point, curve, ancillas, midPoint);
@@ -1432,16 +1432,16 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             let finalRoundSize = nDoublings - subRoundSize * (nRounds - 1); 
             
             // We need a temporary register to store the output of each doubling phase temporarily
-            using (sparePointQubits = Qubit[pointSize]){
+            use sparePointQubits = Qubit[pointSize]{
                 let sparePoint =  QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, sparePointQubits);
 
                 // Here we allocate the output registers for each round
-                using (pebbledPointQubits = Qubit[pointSize * (nRounds - 1)]){
+                use pebbledPointQubits = Qubit[pointSize * (nRounds - 1)]{
                     let pebbledPoints = [point] + QubitArrayAsECPointArray(nRounds - 1, nQubits, modulus, pebbledPointQubits);
-                    for (idx in 0..nRounds - 2){
+                    for idx in 0..nRounds - 2{
                         // Compute the point, copy out, then uncompute
                         let (nDoublingAnc, _) = AncillaCountIteratedPointDoubling(nQubits, subRoundSize);
-                        using (doublingAncillas = Qubit[nDoublingAnc]){
+                        use doublingAncillas = Qubit[nDoublingAnc]{
                             IteratedPointDoublingOpen(
                                 curve,
                                 pebbledPoints[idx],
@@ -1461,7 +1461,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                     }
                     // Final round (may have a different size)
                     let (nFinalAnc, _) = AncillaCountIteratedPointDoubling(nQubits, finalRoundSize);
-                    using (doublingAncillas = Qubit[nFinalAnc]){
+                    use doublingAncillas = Qubit[nFinalAnc]{
                         IteratedPointDoublingOpen(
                             curve,
                             pebbledPoints[nRounds - 1],
@@ -1480,9 +1480,9 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                         );
                     }
                     // Uncompute outputs from all previous phases
-                    for (idx in nRounds - 2..(-1)..0){
+                    for idx in nRounds - 2..(-1)..0{
                         let (nDoublingAnc, _) = AncillaCountIteratedPointDoubling(nQubits, subRoundSize);
-                        using (doublingAncillas = Qubit[nDoublingAnc]){
+                        use doublingAncillas = Qubit[nDoublingAnc]{
                             IteratedPointDoublingOpen(
                                 curve,
                                 pebbledPoints[idx],
@@ -1540,7 +1540,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             let nQubits = Length(point::xs::reals::register!);
             let modulus = point::xs::modulus;
             let (nDoubleAncilla, nDoubleOut) = AncillaCountIteratedPointDoubling(nQubits, nDoublings);
-            using ((doubledAncillas, doubledOutputs) = (Qubit[nDoubleAncilla], Qubit[nDoubleOut])){
+            use (doubledAncillas, doubledOutputs) = (Qubit[nDoubleAncilla], Qubit[nDoubleOut]){
                 let tempDoubledPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, doubledOutputs);
                 IteratedPointDoublingOpen(curve, point, nDoublings, doubledAncillas, tempDoubledPoint);
                 CopyECPointMontgomeryXZ(tempDoubledPoint, outputPoint);
@@ -1715,7 +1715,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             // See documentation for full explanation: There are two "modes" depending on whether
             // the bits of the coefficient are one or zero; we must swap Q and Q - P whenever
             // we switch modes.
-            for (idx in 0.. nRounds - 1){
+            for idx in 0.. nRounds - 1{
                 // Needed for the first swap if we are in the "zero mode""
                 if (idx == 0){
                     X(coefficient![0]);
@@ -1854,7 +1854,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             let nRounds = Length(coefficient!);
             let nQubits = Length(output::xs::reals::register!);
             let pointSize = 4 * nQubits;
-            using ((qQubits, qMinPQubits, outputQQubits, outputQminPQubits) = (Qubit[pointSize], Qubit[pointSize], Qubit[pointSize], Qubit[pointSize])){
+            use (qQubits, qMinPQubits, outputQQubits, outputQminPQubits) = (Qubit[pointSize], Qubit[pointSize], Qubit[pointSize], Qubit[pointSize]){
                 let qPointQ = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, qQubits);
                 let qPointQminP = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, qMinPQubits);
                 // outputQminP is pointless actually: these are blank qubits that remain unchanged
@@ -1932,7 +1932,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             let pointSize = 4 * nQubits;
             // The "spare point" is what each open point ladder uses for its final output
             // It gets copied out to a larger array each time
-            using ((midQQubits, midQminPQubits) = (Qubit[pointSize], Qubit[pointSize])){
+            use (midQQubits, midQminPQubits) = (Qubit[pointSize], Qubit[pointSize]){
                 let midQ = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, midQQubits);
                 let midQminP = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, midQminPQubits);
                 if (nRounds == 0) {
@@ -1940,7 +1940,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                     (Controlled CopyECPointMontgomeryXZ)(controls, (pointQminP, outputQminP));
                 } elif (nRounds == 1){
                     let (nAncillas, _) = AncillaCountECPointDiffAddition(nQubits);
-                    using (ancillas = Qubit[nAncillas]){
+                    use ancillas = Qubit[nAncillas]{
                         X(coefficient![0]);
                         (Controlled SwapECPointMontgomeryXZ)([coefficient![0]], (pointQ, pointQminP));
                         DifferentialAddECPointMontgomeryXZOpen(pointPs[0], pointQ, pointQminP, ancillas, midQ);
@@ -2056,20 +2056,20 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             let pointSize = 4 * nQubits;
             // The "spare point" is what each open point ladder uses for its final output
             // It gets copied out to a larger array each time
-            using (sparePointQQubits = Qubit[pointSize]){
+            use sparePointQQubits = Qubit[pointSize]{
                 let sparePointQ = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, sparePointQQubits);
                 // Here we allocate all the qubits we will use for pebbling. 
                 // These are the intermediate points, representing the output of each unpebbled phase
-                using ((pebblePointQQubits, pebblePointQminPQubits) = (Qubit[pointSize * nPebbles], Qubit[pointSize * nPebbles])){
+                use (pebblePointQQubits, pebblePointQminPQubits) = (Qubit[pointSize * nPebbles], Qubit[pointSize * nPebbles]){
                     let pebbledQPoints = QubitArrayAsECPointArray(nPebbles, nQubits, modulus, pebblePointQQubits) + [outputPoint];
                     let pebbledQminPPoints = QubitArrayAsECPointArray(nPebbles, nQubits, modulus, pebblePointQminPQubits);
                     // The first point in the array should be the input points
                     EncodeECPointMontgomeryXZ(pointQ, pebbledQPoints[0]);
                     EncodeECPointMontgomeryXZ(pointQminP, pebbledQminPPoints[0]);
-                    for (idx in 0..nPebbles - 1) {
+                    for idx in 0..nPebbles - 1 {
                         // For each unpebbled phase, we allocate all the necessary ancilla
                         let (nLadderAnc, _) = AncillaCountPointLadder (nQubits, Length(subRounds[idx]));
-                        using (ladderAncillas = Qubit[nLadderAnc]){
+                        use ladderAncillas = Qubit[nLadderAnc]{
                             // Compute that phase, copy out the answer, and uncompute
                             MontgomeryXZPointLadderAllQuantumOpenWide(
                                 subDoubledPs[idx],
@@ -2097,9 +2097,9 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                         }	
                     }
                     // Now we must uncompute the outputs of all the phases
-                    for (idx in (nPebbles - 2)..(-1)..0) {
+                    for idx in (nPebbles - 2)..(-1)..0 {
                         let (nLadderAnc, nLadderOut) = AncillaCountPointLadder (nQubits, Length(subRounds[idx]));
-                        using (ladderAncillas = Qubit[nLadderAnc]){
+                        use ladderAncillas = Qubit[nLadderAnc]{
                             MontgomeryXZPointLadderAllQuantumOpenWide(
                                 subDoubledPs[idx],
                                 pebbledQPoints[idx],
@@ -2203,7 +2203,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             let nQubits = Length(curve::a24Plus::reals::register!);
             let modulus = curve::a24Plus::modulus;
             let (nAncilla, nOutputs) = AncillaCountJInvariantAPlusC(nQubits);
-            using ((ancillas, outputs) = (Qubit[nAncilla], Qubit[nOutputs])){
+            use (ancillas, outputs) = (Qubit[nAncilla], Qubit[nOutputs]){
                 let internalJInvariant = QubitArrayAsFp2MontModInt(modulus, outputs);
                 GetJInvariantAPlusCOpen(curve, ancillas, internalJInvariant);
                 (Controlled CopyFp2MontModInt)(controls, (internalJInvariant, jInvariant));
@@ -2330,7 +2330,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             let nQubits = Length(kernelPoint::xs::reals::register!);
             let modulus = kernelPoint::xs::modulus;
             CrissCrossFp2ElementMontgomeryForm(targetPoint::xs, targetPoint:: zs); // xs = x - z, zs = x + z
-            using ((crossPlusQubits, crossMinusQubits) = (Qubit[2 * nQubits], Qubit[2 * nQubits])){
+            use (crossPlusQubits, crossMinusQubits) = (Qubit[2 * nQubits], Qubit[2 * nQubits]){
                 let crossPlus = QubitArrayAsFp2MontModInt(modulus, crossPlusQubits); 
                 let crossMinus = QubitArrayAsFp2MontModInt(modulus, crossMinusQubits);
                 MulAndXorFp2ElementMontgomeryForm(kernelPoint::xs, targetPoint::zs, crossMinus); //crossMinus = (Px-Pz)(Qx+Qz)
@@ -2473,14 +2473,14 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                 );
             } else {
                 let (leftHeight, rightHeight) = OptimalSIKEDivision(height, nTrailingPoints, nQubits, false) ;
-                using (leftPointQubits = Qubit[4 * nQubits]){
+                use leftPointQubits = Qubit[4 * nQubits]{
                     let leftPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, leftPointQubits);
                     
                     // Double input point to get start of left recursion
                     IteratedPointDouble(startingCurve, startingPoint, rightHeight, leftPoint);
                     // Now we need trailing points for the next recursive call
                     
-                    using ((trailingPointQubits, midCurveQubits, rightPointQubits) = (Qubit[nTrailingPoints * 4 * nQubits], Qubit[4 * nQubits], Qubit[4 * nQubits])){
+                    use (trailingPointQubits, midCurveQubits, rightPointQubits) = (Qubit[nTrailingPoints * 4 * nQubits], Qubit[4 * nQubits], Qubit[4 * nQubits]){
                         let midTrailingPoints = QubitArrayAsECPointArray(nTrailingPoints, nQubits, modulus, trailingPointQubits);
                         let midCurve = QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, midCurveQubits);
                         let rightPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, rightPointQubits);
@@ -2598,10 +2598,10 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         controlled (controls, ...){
             let nQubits = Length(outputJInvariant::reals::register!);
             let modulus = outputJInvariant::modulus;
-            using (kernelPointQubits = Qubit[4 * nQubits]){
+            use kernelPointQubits = Qubit[4 * nQubits]{
                 let kernelPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, kernelPointQubits);
                 MontgomeryXZPointLadder(startingCurve, pointP, pointQ, pointR, secretKey, kernelPoint);
-                using ((startingCurveQubits, outputCurveQubits) = (Qubit[4 * nQubits], Qubit[4 * nQubits])){
+                use (startingCurveQubits, outputCurveQubits) = (Qubit[4 * nQubits], Qubit[4 * nQubits]){
                     let qStartingCurve = QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, startingCurveQubits);
                     EncodeECCoordsMontgomeryFormAPlusC(startingCurve, qStartingCurve);
                     let outputCurve = QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, outputCurveQubits);
@@ -2673,7 +2673,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             if (height == 1){//base case
                 if (nTrailingPoints >= 1){
                     CrissCrossFp2ElementMontgomeryForm(startingPoint::xs, startingPoint::zs);
-                    using (fanoutQubits = Qubit[4 * nQubits * (nTrailingPoints - 1)]){
+                    use fanoutQubits = Qubit[4 * nQubits * (nTrailingPoints - 1)]{
                         let pointRegister = 
                                 startingPoint::xs::reals::register! 
                                 + startingPoint::xs::imags::register! 
@@ -2683,7 +2683,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                             FanoutRegister(pointRegister, fanoutQubits);
                         }
                         let pointArray = [startingPoint] + QubitArrayAsECPointArray(nTrailingPoints - 1, nQubits, modulus, fanoutQubits);
-                        for (idx in 0.. nTrailingPoints - 1){
+                        for idx in 0.. nTrailingPoints - 1{
                             _TwoIsogenyOfCrossedKernelPoint(pointArray[idx], trailingPoints[idx], outputTrailingPoints[idx]);
                         }
                         if (nTrailingPoints > 1){
@@ -2699,7 +2699,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                     (Adjoint TwoIsogenyOfCurveMontgomeryXZ)(startingPoint, outputCurve);
                 }
             } elif (height == 3) {
-                using ((pointQubits, 
+                use (pointQubits, 
                     doublingAncillas,
                     curveQubits,
                     trailingPointQubits
@@ -2708,7 +2708,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                     Qubit[nDoubleAncilla * 2],
                     Qubit[4 * nQubits * 2],
                     Qubit[4 * nQubits * 2 * nTrailingPoints]
-                )){
+                ){
                     let treePoints = QubitArrayAsECPointArray(5, nQubits, modulus, pointQubits);
                     let curves = [
                         QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, curveQubits[0.. 4 * nQubits - 1]),
@@ -2771,7 +2771,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                 }
 
             } elif (height == 4) {
-                using ((pointQubits, 
+                use (pointQubits, 
                     doublingAncillas,
                     curveQubits,
                     trailingPointQubits
@@ -2780,7 +2780,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                     Qubit[nDoubleAncilla * 4],
                     Qubit[4 * nQubits * 3],
                     Qubit[4 * nQubits * 3 * nTrailingPoints]
-                )){
+                ){
                     let treePoints = QubitArrayAsECPointArray(8, nQubits, modulus, pointQubits);
                     let curves = [
                         QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, curveQubits[0.. 4 * nQubits - 1]),
@@ -2870,14 +2870,14 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             } else {
                 //here we just do the full tree, no uncomputing mid-way values
                 let midHeight = height/2;
-                using ((doubledQubits, 
+                use (doubledQubits, 
                     isogenyCurveQubits,
                     trailingPointQubits
                     ) = (
                     Qubit[4 * nQubits], 
                     Qubit[4 * nQubits], 
                     Qubit[4 * nQubits * (nTrailingPoints+1)]
-                )){
+                ){
                     let doubledPoint = QubitArrayAsECPointMontgomeryXZ(modulus, nQubits, doubledQubits);
                     let isogenyCurve = QubitArrayAsECCoordsMontgomeryFormAPlusC(modulus, nQubits, isogenyCurveQubits);
                     let midTrailingPoints = QubitArrayAsECPointArray(nTrailingPoints + 1, nQubits, modulus, trailingPointQubits);

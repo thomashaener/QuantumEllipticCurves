@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
 namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
@@ -358,7 +358,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
             ModularNegMontgomeryForm(abs::imags);
         }
             controlled (controls, ...){
-            using (singleControls = Qubit[2]){
+            use singleControls = Qubit[2]{
                 (Controlled X)(controls, (singleControls[0]));
                 CNOT(singleControls[0], singleControls[1]);
                 (Controlled ModularNegMontgomeryForm)([singleControls[0]], (abs::reals));
@@ -404,7 +404,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
             ModularDblMontgomeryForm(abs::imags);
         }
         controlled (controls, ...){
-            using (singleControls = Qubit[2]){
+            use singleControls = Qubit[2]{
                 (Controlled X)(controls, (singleControls[0]));
                 CNOT(singleControls[0], singleControls[1]);
                 (Controlled ModularDblMontgomeryForm)([singleControls[0]], (abs::reals));
@@ -460,7 +460,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
             CopyLittleEndian(source::imags::register, target::imags::register);
         }
         controlled (controls, ...){
-            using (spareControl = Qubit()){
+            use spareControl = Qubit(){
                 (Controlled X)(controls, (spareControl));
                 (Controlled CopyLittleEndian)(controls, (source::reals::register, target::reals::register) );
                 (Controlled CopyLittleEndian)([spareControl], (source::imags::register, target::imags::register));
@@ -489,7 +489,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
             SwapLE(input1::imags::register, input2::imags::register);
         }
         controlled (controls, ...){
-            using (singleControl = Qubit()){
+            use singleControl = Qubit(){
                 (Controlled X)(controls, (singleControl));
                 (Controlled SwapLE)(controls, (input1::reals::register, input2::reals::register));
                 (Controlled SwapLE)([singleControl], (input1::imags::register, input2::imags::register));
@@ -994,7 +994,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
             (Adjoint ModularMulAndAddMontgomeryForm)(freeInputs, abs::imags, cds::imags);
         }
         controlled (controls, ...){
-            using (singleControls = Qubit[2]){
+            use singleControls = Qubit[2]{
                 (Controlled X)(controls, (singleControls[0]));
                 CNOT(singleControls[0], singleControls[1]);
                 (Controlled ModularMulAndAddMontgomeryForm)([singleControls[0]], (freeInputs, abs::reals, cds::reals));
@@ -1023,7 +1023,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
         controlled (controls, ...){
             let DoubleFp2WithInteger = DummyIntegerWrapper(Adjoint DblFp2MontgomeryForm, cds, _);
             let nQubits = Length(abs::reals::register!);
-            using (squares = Qubit[nQubits]){
+            use squares = Qubit[nQubits]{
                 let squaresMontgomery = MontModInt(abs::modulus, LittleEndian(squares));
                 ModularSquMontgomeryFormGeneric(CopyMontModInt(_, squaresMontgomery), abs::reals);
                 ModularSquMontgomeryFormGeneric(ModularAddMontgomeryForm(_, squaresMontgomery), abs::imags);
@@ -1129,7 +1129,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
         controlled (controls, ...){
             let nQubits = Length(abs::reals::register!);
             let DoubleFp2WithInteger = DummyIntegerWrapper(Adjoint DblFp2MontgomeryForm, efs, _);
-            using (squares = Qubit[nQubits]){
+            use squares = Qubit[nQubits]{
                 //Given abs = a+bi
                 //	    cds = c+di
                 //      efs = e+fi
