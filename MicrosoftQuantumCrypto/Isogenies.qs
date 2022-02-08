@@ -155,7 +155,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             Message($"Warning, given {Length(register)} qubits to encode {nPoints} elliptic curve
                 points, which only require {4 * nPoints * nQubits} qubits");
         }
-        mutable pointArray = new ECPointMontgomeryXZ[nPoints];
+        mutable pointArray = [Default<ECPointMontgomeryXZ>(), size = nPoints];
         for idx in 0.. nPoints - 1{
             set pointArray w/= idx <- ECPointMontgomeryXZ(
                 QubitArrayAsFp2MontModInt(modulus, register[4 * idx * nQubits .. (4 * idx + 2) * nQubits - 1]),
@@ -719,7 +719,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
     /// Array of the multiples of P: 
     /// [P, 2P, 4P, 8P, ...]
     function DoubledPointArray(point : ECPointMontgomeryXZClassical, curve : ECCoordsMontgomeryFormAPlusCClassical, nPoints : Int) : ECPointMontgomeryXZClassical[] {
-        mutable points = new ECPointMontgomeryXZClassical[nPoints];
+        mutable points = [Default<ECPointMontgomeryXZClassical>(), size = nPoints];
         set points w/= 0 <- point;
         for idx in 1 .. nPoints - 1{
             set points w/= idx <- PointDoubleMontgomeryXZClassical(points[idx - 1], curve);
@@ -938,7 +938,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         let nPoints = Length(trailingPoints);
         if (height==1){
             let outCurve = TwoIsogenousCurveMontgomeryXZClassical(startingPoint);
-            mutable outPoints = new ECPointMontgomeryXZClassical[nPoints];
+            mutable outPoints = [Default<ECPointMontgomeryXZClassical>(), size = nPoints];
             for idxPoint in 0..nPoints - 1{
                 set outPoints w/= idxPoint <- TwoIsogenyAtPointMontgomeryXZClassical(startingPoint, trailingPoints[idxPoint]);
             }
@@ -1008,7 +1008,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         let (_, outCurve) = IsogenyTreeMiddleClassical(
             startingCurve,
             kernelPoint,
-            new ECPointMontgomeryXZClassical[0],
+            [],
             height
         );
         return JInvariantClassical(MontgomeryCurveClassicalAsACFromAPlusC(outCurve));
@@ -1092,7 +1092,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
     ///    Follows Algorithm 3 from Appendix A.
     operation DoubleECPointMontgomeryXZ(point : ECPointMontgomeryXZ, curve : ECCoordsMontgomeryFormAPlusC, doubledpoint : ECPointMontgomeryXZ) : Unit {
         body (...){
-            (Controlled DoubleECPointMontgomeryXZ)(new Qubit[0], (point, curve, doubledpoint));
+            (Controlled DoubleECPointMontgomeryXZ)([], (point, curve, doubledpoint));
         }
         controlled (controls, ...){
             CrissCrossFp2ElementMontgomeryForm(point::xs, point::zs);
@@ -1344,7 +1344,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         outputPoint : ECPointMontgomeryXZ
     ) : Unit {
         body (...){
-            (Controlled IteratedPointDoubleLowMemory)(new Qubit[0], (curve, point, nDoublings, outputPoint));
+            (Controlled IteratedPointDoubleLowMemory)([], (curve, point, nDoublings, outputPoint));
         }
         controlled(controls, ...){
             // Bookkeeping
@@ -1418,7 +1418,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         outputPoint : ECPointMontgomeryXZ
     ) : Unit {
         body (...){
-            (Controlled IteratedPointDoubleHighMemory)(new Qubit[0], (curve, point, nDoublings, outputPoint));
+            (Controlled IteratedPointDoubleHighMemory)([], (curve, point, nDoublings, outputPoint));
         }
         controlled(controls, ...){
             // Bookkeeping
@@ -1534,7 +1534,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         outputPoint : ECPointMontgomeryXZ
     ) : Unit {
         body (...){
-            (Controlled IteratedPointDoubleFullMemory)(new Qubit[0], (curve, point, nDoublings, outputPoint));
+            (Controlled IteratedPointDoubleFullMemory)([], (curve, point, nDoublings, outputPoint));
         }
         controlled (controls, ...){
             let nQubits = Length(point::xs::reals::register!);
@@ -1920,7 +1920,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         isFinal : Bool
     ) : Unit {
         body (...){
-            (Controlled MontgomeryXZPointLadderLowMemoryInner)(new Qubit[0], (curve, pointPs, pointQ, pointQminP, coefficient, outputQ, outputQminP, isFinal));
+            (Controlled MontgomeryXZPointLadderLowMemoryInner)([], (curve, pointPs, pointQ, pointQminP, coefficient, outputQ, outputQminP, isFinal));
         }
         controlled (controls, ...){
             // Bookkeeping
@@ -2035,7 +2035,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         outputPoint : ECPointMontgomeryXZ
     ) : Unit {
         body (...){
-            (Controlled MontgomeryXZPointLadderHighMemory)(new Qubit[0], (curve, pointP, pointQ, pointQminP, coefficient, outputPoint));
+            (Controlled MontgomeryXZPointLadderHighMemory)([], (curve, pointP, pointQ, pointQminP, coefficient, outputPoint));
         }
         controlled (controls, ...){
             // Bookkeeping
@@ -2151,7 +2151,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         /// Main idea: We convert the curve to (A : C) form, then call GetJInvariantACOpen
         /// The conversion is non-adjointable, so we must specify the adjoint manually.
         body (...){
-            (Controlled GetJInvariantAPlusCOpen)(new Qubit[0], (curve, ancillas, blankOutput));
+            (Controlled GetJInvariantAPlusCOpen)([], (curve, ancillas, blankOutput));
         }
         controlled  (controls, ...){
             let curveAC = ECCoordsAPlusCToAC(curve); //convert curve to the right form
@@ -2159,7 +2159,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
             let originalCurve = ECCoordsACToAPlusC(curveAC); //converts back (acts as the adjoint)
         }
         adjoint (...){
-            (Controlled Adjoint GetJInvariantAPlusCOpen)(new Qubit[0], (curve, ancillas, blankOutput));
+            (Controlled Adjoint GetJInvariantAPlusCOpen)([], (curve, ancillas, blankOutput));
         }
         controlled adjoint (controls, ...){
             let curveAC = ECCoordsAPlusCToAC(curve); //convert curve to the right form
@@ -2197,7 +2197,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
     /// Blank qubit register to contain the j-invariant.
     operation GetJInvariantAPlusC (curve : ECCoordsMontgomeryFormAPlusC, jInvariant : Fp2MontModInt) : Unit {
         body (...){
-            (Controlled GetJInvariantAPlusC)(new Qubit[0], (curve, jInvariant));
+            (Controlled GetJInvariantAPlusC)([], (curve, jInvariant));
         }
         controlled (controls, ...){
             let nQubits = Length(curve::a24Plus::reals::register!);
@@ -2324,7 +2324,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         outputPoint : ECPointMontgomeryXZ
     ) : Unit {
         body (...){
-            (Controlled _TwoIsogenyOfCrossedKernelPoint)(new Qubit[0], (kernelPoint, targetPoint, outputPoint));
+            (Controlled _TwoIsogenyOfCrossedKernelPoint)([], (kernelPoint, targetPoint, outputPoint));
         }
         controlled (controls, ...){
             let nQubits = Length(kernelPoint::xs::reals::register!);
@@ -2372,7 +2372,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
     ///    Follows Algorithm 12 from Appendix A.
     operation TwoIsogenyOfPoint(kernelPoint : ECPointMontgomeryXZ, targetPoint : ECPointMontgomeryXZ, outputPoint : ECPointMontgomeryXZ) : Unit {
         body (...){
-            (Controlled TwoIsogenyOfPoint)(new Qubit[0], (kernelPoint, targetPoint, outputPoint));
+            (Controlled TwoIsogenyOfPoint)([], (kernelPoint, targetPoint, outputPoint));
         }
         controlled (controls, ...){
             let nQubits = Length(kernelPoint::xs::reals::register!);
@@ -2402,7 +2402,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
     ///	   The subtraction in step 3 is reversed.
     operation TwoIsogenyOfCurveMontgomeryXZ(point : ECPointMontgomeryXZ, outputCurve : ECCoordsMontgomeryFormAPlusC): Unit{
         body (...){
-            (Controlled TwoIsogenyOfCurveMontgomeryXZ)(new Qubit[0], (point, outputCurve));
+            (Controlled TwoIsogenyOfCurveMontgomeryXZ)([], (point, outputCurve));
         }
         controlled (controls, ...){
             let nQubits = Length(point::xs::reals::register!);
@@ -2585,7 +2585,7 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
         outputJInvariant : Fp2MontModInt
     ) : Unit {
         body (...){
-            (Controlled ComputeSIKETwoIsogeny)(new Qubit[0], (
+            (Controlled ComputeSIKETwoIsogeny)([], (
                 startingCurve, 
                 pointP, 
                 pointQ, 
@@ -2609,8 +2609,8 @@ namespace Microsoft.Quantum.Crypto.Isogenies {
                         kernelPoint,
                         qStartingCurve,
                         height,
-                        new ECPointMontgomeryXZ[0],
-                        new ECPointMontgomeryXZ[0],
+                        [],
+                        [],
                         outputCurve,
                         (Controlled GetJInvariantAPlusC)(controls, (_, outputJInvariant))
                     );

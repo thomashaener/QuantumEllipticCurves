@@ -431,7 +431,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
     /// with the result.
     operation AddFp2ElementMontgomeryForm(abs : Fp2MontModInt, cds : Fp2MontModInt) : Unit {
         body (...){
-            (Controlled AddFp2ElementMontgomeryForm)(new Qubit[0], (abs, cds));
+            (Controlled AddFp2ElementMontgomeryForm)([], (abs, cds));
         }
         controlled (controls, ...){
             (Controlled ModularAddMontgomeryForm)(controls, (abs::reals, cds::reals));
@@ -540,7 +540,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
     /// This saves roughly 6 additions compared to addition into `blankOutputs`	
     operation MulAndXorFp2ElementMontgomeryForm(abs : Fp2MontModInt, cds : Fp2MontModInt, blankOutputs : Fp2MontModInt) : Unit {
         body(...){
-            (Controlled MulAndXorFp2ElementMontgomeryForm)(new Qubit[0], (abs, cds, blankOutputs));
+            (Controlled MulAndXorFp2ElementMontgomeryForm)([], (abs, cds, blankOutputs));
         }
         controlled (controls, ...){
             // Given input (a+bi) and (c+di)
@@ -586,7 +586,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
     /// Qubit register containing e+fi which will be added to the product.
     operation MulAndAddFp2ElementMontgomeryForm(abs : Fp2MontModInt, cds : Fp2MontModInt, outputs : Fp2MontModInt) : Unit {
         body(...){
-            (Controlled MulAndAddFp2ElementMontgomeryForm)(new Qubit[0], (abs, cds, outputs));
+            (Controlled MulAndAddFp2ElementMontgomeryForm)([], (abs, cds, outputs));
         }
         controlled (controls, ...){		
             // Given output x+yi
@@ -809,7 +809,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
     /// Qubit register containing e+fi and will contain the output.
     operation MulByConstantAndAddFp2MontgomeryFormGeneric(constant : Fp2ElementClassical, abs : Fp2MontModInt, outputs : Fp2MontModInt) : Unit {
         body (...){
-            (Controlled MulByConstantAndAddFp2MontgomeryFormGeneric)(new Qubit[0], (constant, abs, outputs));
+            (Controlled MulByConstantAndAddFp2MontgomeryFormGeneric)([], (constant, abs, outputs));
         }
         controlled (controls, ...){
             let nQubits = Length(abs::reals::register!);
@@ -860,7 +860,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
     /// or adding the result to `absquareds`
     operation SquareFp2ElementMontgomeryFormGeneric(abs : Fp2MontModInt, absquareds : Fp2MontModInt, Multiplier : ((MontModInt, MontModInt, MontModInt)=>Unit is Ctl+Adj)) : Unit {
         body (...){
-            (Controlled SquareFp2ElementMontgomeryFormGeneric)(new Qubit[0], (abs, absquareds, Multiplier));
+            (Controlled SquareFp2ElementMontgomeryFormGeneric)([], (abs, absquareds, Multiplier));
         }
         controlled (controls, ...){
             ModularDblMontgomeryForm(abs::imags);
@@ -1018,7 +1018,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
     /// Qubit register to which the inverse will be added.
     operation InvertAndAddFp2ElementMontgomeryForm(abs : Fp2MontModInt, cds : Fp2MontModInt) : Unit {
         body (...){
-            (Controlled InvertAndAddFp2ElementMontgomeryForm)(new Qubit[0], (abs, cds));
+            (Controlled InvertAndAddFp2ElementMontgomeryForm)([], (abs, cds));
         }
         controlled (controls, ...){
             let DoubleFp2WithInteger = DummyIntegerWrapper(Adjoint DblFp2MontgomeryForm, cds, _);
@@ -1061,7 +1061,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
     /// fixed as $(a^2+b^2)^{-1}$ is uncomputed.
     operation _MultiplyFp2InDivision(xNormInvs : MontModInt, abs : Fp2MontModInt, cds : Fp2MontModInt, efs : Fp2MontModInt) : Unit {
         body (...){
-            (Controlled _MultiplyFp2InDivision)(new Qubit[0], (xNormInvs, abs, cds, efs));
+            (Controlled _MultiplyFp2InDivision)([], (xNormInvs, abs, cds, efs));
         }
         controlled (controls, ...){
             //Input is expected to be : 
@@ -1124,7 +1124,7 @@ namespace Microsoft.Quantum.Crypto.Fp2Arithmetic {
     /// keeps the ancilla from the inversion steps while it computes the rest.
     operation DivideAndAddFp2ElementMontgomeryForm(abs : Fp2MontModInt, cds : Fp2MontModInt, efs : Fp2MontModInt) : Unit {
         body (...){
-            (Controlled DivideAndAddFp2ElementMontgomeryForm)(new Qubit[0], (abs, cds, efs));
+            (Controlled DivideAndAddFp2ElementMontgomeryForm)([], (abs, cds, efs));
         }
         controlled (controls, ...){
             let nQubits = Length(abs::reals::register!);

@@ -483,7 +483,7 @@ namespace Microsoft.Quantum.Crypto.Tests {
                             //3) Where cpoint+cPoint2 = -cPoint1
                             if (cPoint2::z and cPoint1::x != cPoint2::x and cPoint3::x != cPoint1::x){
                                 let address = DrawRandomInt(0, 2 ^ addressSize - 1);
-                                mutable points = new ECPointClassical[2^addressSize];
+                                mutable points = [Default<ECPointClassical>(), size = 2^addressSize];
                                 set points w/= address <- cPoint1;
                                 EllipticCurveWindowedPointAdditionTestHelper(WindowedPointAdder, points, cPoint2, address, addressSize, nQubits);
                                 set success = true;

@@ -66,7 +66,7 @@ namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
     /// `counter` is not in its zero state.
     operation TestSpecialCounter(counter : Qubit[], target : Qubit) : Unit {
         body (...) {
-            (Controlled TestSpecialCounter)(new Qubit[0], (counter, target));
+            (Controlled TestSpecialCounter)([], (counter, target));
         }
         controlled(controls, ...){
             (Controlled CheckIfAllOnes)(controls, (counter, target));
@@ -117,7 +117,7 @@ namespace Microsoft.Quantum.Crypto.NC.SpecialCounters {
     /// Qubit register of the counter to increment.
     operation IncrementSpecialCounter(counter : Qubit[]) : Unit {
         body (...) {
-            (Controlled IncrementSpecialCounter)(new Qubit[0], (counter));
+            (Controlled IncrementSpecialCounter)([], (counter));
         }
         controlled (controls, ...){
             let nQubits=Length(counter);

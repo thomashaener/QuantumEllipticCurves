@@ -214,7 +214,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
     /// Craig Gidney. 2019. "Windowed Quantum Arithmetic", https://arxiv.org/abs/1905.07682
     operation EqualLookup<'T> (table: 'T[], QuantumWrite : (('T) => Unit is Ctl + Adj), address: LittleEndian) : Unit {
         body (...) {
-            Controlled EqualLookup(new Qubit[0], (table, QuantumWrite, address));
+            Controlled EqualLookup([], (table, QuantumWrite, address));
         }
         controlled (cs, ...) {
             if (Length(table) == 0) {
@@ -290,7 +290,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
             }
         }
         adjoint (...) {
-            (Controlled EqualLookup)(new Qubit[0], (table, (Adjoint QuantumWrite), address));
+            (Controlled EqualLookup)([], (table, (Adjoint QuantumWrite), address));
         }
         controlled adjoint (controls, ...){
             (Controlled EqualLookup)(controls, (table, (Adjoint QuantumWrite), address));
@@ -394,7 +394,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
         let nPartitions = length/size;
         Fact((Length(array) % size) == 0, $"Cannot evenly partition array of length
             {Length(array)} into pieces of size {size}.");
-        mutable returnArray = new 'T[][nPartitions];
+        mutable returnArray = [[], size=nPartitions];
         for idx in 0.. nPartitions - 1{
             set returnArray w/= idx <- array[size * idx .. size * (idx + 1) - 1];
         }
@@ -860,7 +860,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
     /// The qubit that will be flipped
     operation CheckIfAllZero(xs : Qubit[], output : Qubit) : Unit {
         body (...){
-            (Controlled CheckIfAllZero)(new Qubit[0], (xs, output));
+            (Controlled CheckIfAllZero)([], (xs, output));
         }
         controlled (controls, ...){
             ApplyToEachWrapperCA(X, xs);
@@ -1094,7 +1094,7 @@ namespace Microsoft.Quantum.Crypto.Basics {
     /// Test again. 
     operation QuantumWhile(lowerBound : Int, upperBound : Int, Body : ((Int)=>Unit is Ctl + Adj), test : ((Qubit)=>Unit is Ctl + Adj), Alternate : ((Int)=>Unit is Ctl + Adj), counter : Counter) : Unit{
         body (...){
-            (Controlled QuantumWhile)(new Qubit[0], (lowerBound, upperBound, Body, test, Alternate, counter));
+            (Controlled QuantumWhile)([], (lowerBound, upperBound, Body, test, Alternate, counter));
         }	
         controlled (controls, ...){
             Fact(upperBound>lowerBound, $"Upper bound ({upperBound}) must be higher than lower bound ({lowerBound})");

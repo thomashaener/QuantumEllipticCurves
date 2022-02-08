@@ -268,7 +268,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     /// Quantum register to write into
     operation EncodeClassicalECPointInQuantum(inputPoint : ECPointClassical, outputPoint : ECPointMontgomeryForm) : Unit {
         body (...) {
-            (Controlled EncodeClassicalECPointInQuantum)(new Qubit[0], (inputPoint, outputPoint));
+            (Controlled EncodeClassicalECPointInQuantum)([], (inputPoint, outputPoint));
         }
         controlled (controls, ...){
             Fact(inputPoint::modulus == outputPoint::xs::modulus,
@@ -393,7 +393,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     ///     * `point1`+`point2` does not equal `-point1
     operation DistinctEllipticCurvePointAddition(point1 : ECPointMontgomeryForm, point2 : ECPointMontgomeryForm) : Unit {
         body (...){
-            (Controlled DistinctEllipticCurvePointAddition)(new Qubit[0], (point1, point2));
+            (Controlled DistinctEllipticCurvePointAddition)([], (point1, point2));
         }
         controlled (controls, ...){
             let nQubits = Length(point1::xs::register!);
@@ -455,7 +455,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     ///     * `point1`+`point2` does not equal `-point1`
     operation DistinctEllipticCurveClassicalPointAddition(point1 : ECPointClassical, point2 : ECPointMontgomeryForm) : Unit {
         body (...){
-            (Controlled DistinctEllipticCurveClassicalPointAddition)(new Qubit[0], (point1, point2));
+            (Controlled DistinctEllipticCurveClassicalPointAddition)([], (point1, point2));
         }
         controlled (controls, ...){
             if (point1::z){
@@ -507,7 +507,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     /// as this is intended for use in windowed point addition
     operation ECPointWrite (inputPoint : ECPointClassical, outputPoint : ECPointMontgomeryForm, outputZ : Qubit) : Unit {
         body (...){
-            (Controlled ECPointWrite)(new Qubit[0], (inputPoint, outputPoint, outputZ));
+            (Controlled ECPointWrite)([], (inputPoint, outputPoint, outputZ));
         }
         controlled (controls, ...){
             let modulus = inputPoint::modulus;
@@ -546,7 +546,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     /// these points "at once" with a single fully-quantum point addition.
     operation WindowedEllipticCurvePointAddition(points : ECPointClassical[], address : LittleEndian, point : ECPointMontgomeryForm) : Unit {
         body (...){
-            (Controlled WindowedEllipticCurvePointAddition)(new Qubit[0], (points, address, point));
+            (Controlled WindowedEllipticCurvePointAddition)([], (points, address, point));
         }
         controlled (controls, ...){
             let modulus = point::xs::modulus;
@@ -626,7 +626,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     /// but should use fewer qubits.
     operation WindowedEllipticCurvePointAdditionLowWidth(points : ECPointClassical[], address : LittleEndian, point : ECPointMontgomeryForm) : Unit {
         body (...){
-            (Controlled WindowedEllipticCurvePointAdditionLowWidth)(new Qubit[0], (points, address, point));
+            (Controlled WindowedEllipticCurvePointAdditionLowWidth)([], (points, address, point));
         }
         controlled (controls, ...){
             let modulus = point::xs::modulus;
@@ -719,7 +719,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
     /// [b - 2^k]P to the register.
     operation SignedWindowedEllipticCurvePointAdditionLowWidth(points : ECPointClassical[], address : Qubit[], point : ECPointMontgomeryForm) : Unit {
         body (...){
-            (Controlled SignedWindowedEllipticCurvePointAdditionLowWidth)(new Qubit[0], (points, address, point));
+            (Controlled SignedWindowedEllipticCurvePointAdditionLowWidth)([], (points, address, point));
         }
         controlled (controls, ...){
             use addressAncilla = Qubit(){

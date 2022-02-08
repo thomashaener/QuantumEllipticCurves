@@ -451,7 +451,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     operation _ComputeCarryCascade (constant : BigInt, xs : LittleEndian, gs : LittleEndian) : Unit
     { 
         body (...) {
-            (Controlled _ComputeCarryCascade) (new Qubit[0], (constant, xs, gs));
+            (Controlled _ComputeCarryCascade) ([], (constant, xs, gs));
         }
         adjoint auto;
         controlled (controls, ...) {
@@ -506,7 +506,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     operation ComputeCarry (constant : BigInt, xs : LittleEndian, carry : Qubit) : Unit
     {
         body (...) {
-            (Controlled ComputeCarry) (new Qubit[0], (constant, xs, carry));
+            (Controlled ComputeCarry) ([], (constant, xs, carry));
         }
         adjoint auto;
         controlled (controls, ...) {
@@ -551,7 +551,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     operation _CarryAndDivide (constant : BigInt, xs : LittleEndian) : Unit
     {
         body (...) {
-            (Controlled _CarryAndDivide) (new Qubit[0], (constant, xs));
+            (Controlled _CarryAndDivide) ([], (constant, xs));
         }
         adjoint auto;
         controlled (controls, ...) {
@@ -634,7 +634,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     /// Qubit register encoding the integer x.
     operation _AddConstantLowT(constant : BigInt, xs : LittleEndian) : Unit {
         body (...) {
-            (Controlled _AddConstantLowT)(new Qubit[0], (constant, xs));
+            (Controlled _AddConstantLowT)([], (constant, xs));
         }
         controlled (controls, ...){
             let nQubits = Length(xs!);
@@ -719,7 +719,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     ///    https://arxiv.org/pdf/1709.06648.pdf
     operation CDKMGAdderNoCarry (xs : LittleEndian, ys : LittleEndian) : Unit {
         body (...){
-            _CDKMGAdderInner(false, xs, ys, new Qubit[0]);
+            _CDKMGAdderInner(false, xs, ys, []);
         }
         controlled adjoint auto;
     }
@@ -754,7 +754,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     ///    https://arxiv.org/pdf/1709.06648.pdf
     operation CDKMGAddConstant (constant : BigInt, xs : LittleEndian) : Unit {
         body (...){
-            (Controlled CDKMGAddConstant)(new Qubit[0], (constant, xs));
+            (Controlled CDKMGAddConstant)([], (constant, xs));
         }
         controlled (controls, ...){
             let nQubits = Length(xs!);
@@ -762,7 +762,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
             use constantQubits = Qubit[nQubits]{
                 let constants = LittleEndian(constantQubits);
                 (Controlled ApplyXorInPlaceL)(controls, (constant, constants));
-                _CDKMGAdderInner(false, constants, xs, new Qubit[0]);
+                _CDKMGAdderInner(false, constants, xs, []);
                 (Controlled Adjoint ApplyXorInPlaceL)(controls, (constant, constants));
             }
         }
@@ -798,7 +798,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     ///    https://arxiv.org/pdf/1709.06648.pdf
     operation _CDKMGBlockForward (previousCarry : Qubit, xQubit : Qubit, yQubit : Qubit, nextCarry : Qubit) : Unit {
         body (...){
-            (Controlled _CDKMGBlockForward)(new Qubit[0], (previousCarry, xQubit, yQubit, nextCarry));
+            (Controlled _CDKMGBlockForward)([], (previousCarry, xQubit, yQubit, nextCarry));
         }
         controlled (controls, ...){
             CNOT(previousCarry, xQubit);
@@ -839,7 +839,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     ///    https://arxiv.org/pdf/1709.06648.pdf
     operation _CDKMGBlockBackward (previousCarry : Qubit, xQubit : Qubit, yQubit : Qubit, nextCarry : Qubit) : Unit {
         body (...){
-            (Controlled _CDKMGBlockBackward)(new Qubit[0], (previousCarry, xQubit, yQubit, nextCarry));
+            (Controlled _CDKMGBlockBackward)([], (previousCarry, xQubit, yQubit, nextCarry));
         }
         controlled (controls, ...){
             CNOT(previousCarry, nextCarry);
@@ -874,7 +874,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     ///    https://arxiv.org/pdf/1709.06648.pdf
     operation _CDKMGAdderInner(useCarry : Bool, xs : LittleEndian, ys : LittleEndian, carry : Qubit[]) : Unit {
         body (...) {
-            (Controlled _CDKMGAdderInner)(new Qubit[0], (useCarry, xs, ys, carry));
+            (Controlled _CDKMGAdderInner)([], (useCarry, xs, ys, carry));
         }
         controlled (controls, ...) {
             if (useCarry){
@@ -955,7 +955,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         carry : Qubit 
     ) : Unit {
         body (...) {
-            (Controlled CompareToConstant)(new Qubit[0], (isGreaterThan, Comparator, constant, xs, carry));
+            (Controlled CompareToConstant)([], (isGreaterThan, Comparator, constant, xs, carry));
         }
         controlled (controls, ...){
             let nQubits = Length(xs!);
@@ -1003,7 +1003,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     ///    https://arxiv.org/pdf/1709.06648.pdf
     operation _CDKMGCompareInner (xs : LittleEndian, ys : LittleEndian, carry : Qubit) : Unit {
     body (...) {
-            (Controlled _CDKMGCompareInner)(new Qubit[0], (xs, ys, carry));
+            (Controlled _CDKMGCompareInner)([], (xs, ys, carry));
         }
         controlled (controls, ...) {
             let nQubits = Length(xs!);
@@ -1074,7 +1074,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
             // and do everything as an even bit-length addition
             if (Length(xs!) % 2 == 0){
                 use bonusQubits = Qubit[1]{
-                    _CLAAdderImpl(CNOT, CCNOTWrapper, AndWrapper, false, xs! + [bonusQubits[0]], ys! + [carry], new Qubit[0]);
+                    _CLAAdderImpl(CNOT, CCNOTWrapper, AndWrapper, false, xs! + [bonusQubits[0]], ys! + [carry], []);
                 }
             } else {
                 _CLAAdderImpl(CNOT, CCNOTWrapper, AndWrapper, true, xs!, ys!,  [carry]);
@@ -1118,7 +1118,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     ///    https : //arxiv.org/abs/quant - ph/0406142
     operation CarryLookAheadAdderNoCarry(xs : LittleEndian, ys : LittleEndian) : Unit {
         body(...){
-            _CLAAdderImpl(CNOT, CCNOTWrapper, AndWrapper, false, xs!, ys!, new Qubit[0]);
+            _CLAAdderImpl(CNOT, CCNOTWrapper, AndWrapper, false, xs!, ys!, []);
         }
         controlled adjoint auto;
     }
@@ -1150,7 +1150,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
                 false, 
                 constantArray[0.. nQubits - 1], 
                 xs!, 
-                new Qubit[0]
+                []
             );
         }
         controlled adjoint auto;
@@ -1200,7 +1200,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         carry : Qubit[]
     ) : Unit {
         body(...){
-            (Controlled _CLAAdderImpl)(new Qubit[0], (cqCNOT,cqCCNOTWrapper, cqAND, useCarry, xs, ys, carry));
+            (Controlled _CLAAdderImpl)([], (cqCNOT,cqCCNOTWrapper, cqAND, useCarry, xs, ys, carry));
         }
         controlled(controls, ...){
             //Control logic : The circuit can be split into 5 steps : 
@@ -1341,7 +1341,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     /// but simply alters the addition circuit to only output the carry.
     operation GreaterThanLookAhead(xs : LittleEndian, ys : LittleEndian, carry : Qubit) : Unit {
         body (...){
-            (Controlled GreaterThanLookAhead)(new Qubit[0], (xs, ys, carry));
+            (Controlled GreaterThanLookAhead)([], (xs, ys, carry));
         }
         controlled (controls, ...){
             if (Length(xs!) % 2 == 0){
@@ -1449,7 +1449,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     /// but simply alters the addition circuit to only output the carry.
     operation LessThanConstantLookAhead(constant : BigInt, xs : LittleEndian, carry : Qubit) : Unit{
         body (...){
-            (Controlled LessThanConstantLookAhead)(new Qubit[0], (constant, xs, carry));
+            (Controlled LessThanConstantLookAhead)([], (constant, xs, carry));
         }
         controlled (controls, ...) {
             let nQubits = Length(xs!);
@@ -1517,7 +1517,7 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
         carry : Qubit
     ) : Unit {
         body(...){
-            (Controlled _CompareLookAheadImpl)(new Qubit[0], (
+            (Controlled _CompareLookAheadImpl)([], (
                 cqCNOT,
                 cqCCNOTWrapper,
                 cqAND,
@@ -1600,12 +1600,12 @@ namespace Microsoft.Quantum.Crypto.Arithmetic {
     function PropArrays(props : Qubit[], ys : Qubit[]) : Qubit[][] {
         let nQubits = Length(ys);
         let logn = Floor(Lg(IntAsDouble(nQubits)));
-        mutable propArrays = new Qubit[][logn];
+        mutable propArrays = [[], size = logn];
         mutable idxProps=0;
         set propArrays w/= 0 <- ys;
         for level in 1..logn - 1{
             let levelSize = nQubits/2^level - 1;
-            mutable levelProps = new Qubit[levelSize + 1];
+            mutable levelProps = [Default<Qubit>(), size = levelSize + 1];
             for idm in 1..levelSize{
                 set levelProps w/= idm <- props[idxProps];
                 set idxProps = idxProps + 1;
