@@ -131,7 +131,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
         let Gx = (xMontgomery + b) % modulus;
         let Gy = yMontgomery;
         set b = (modulus - b) % modulus;
-        set b = (b + 2L * aMontgomery^3 * threeInverse^3) % modulus;
+        set b = (b + 2L * (aMontgomery^3) * ((1L*threeInverse)^3)) % modulus;
         let order = 8L*(2L^252 + 27742317777372353535851937790883648493L)	;
         return (ECCurveWeierstrassClassical(a, b, modulus), ECPointClassical(Gx, Gy, true, modulus), order, "curve25519");
     }
@@ -336,7 +336,7 @@ namespace Microsoft.Quantum.Crypto.EllipticCurves {
         let ysq= (x^3 + a*x + b)%modulus;
         let y = ModPowL(ysq, (modulus + 1L) / 4L, modulus);
         //test if y is the squre root
-        let ysqtest = (y ^ 2) % modulus;
+        let ysqtest = ((1L*y)^2) % modulus;
         if (not (ysqtest == ysq)){
             return ECPointClassical(0L, 0L, false, modulus);
         }
